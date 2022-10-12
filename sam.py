@@ -1,11 +1,9 @@
-import requests
 import json
-from bs4 import BeautifulSoup
-import os
+import requests
 
-base_url1='https://bg.annapurnapost.com/api/search?title=%E0%A4%95%E0%A5%8B%E0%A4%B0%E0%A5%8B%E0%A4%A8%E0%A4%BE'
-base_url2='https://bg.annapurnapost.com/api/search?title=%E0%A4%95%E0%A5%8B%E0%A4%B0%E0%A5%8B%E0%A4%A8%E0%A4%BE&page=2'
-base_url3='https://bg.annapurnapost.com/api/search?title=%E0%A4%95%E0%A5%8B%E0%A4%B0%E0%A5%8B%E0%A4%A8%E0%A4%BE&page=33'
+
+base_url='https://bg.annapurnapost.com/api/search?title=%E0%A4%95%E0%A5%8B%E0%A4%B0%E0%A5%8B%E0%A4%A8%E0%A4%BE&page='
+
 
 
 headers = {
@@ -13,40 +11,35 @@ headers = {
         'Accept-Language': 'en-GB,en;q=0.5',
     }
 
-r=requests.get(base_url1, headers = headers)
-s=requests.get(base_url2, headers = headers)
-p=requests.get(base_url3, headers = headers)
-kantipursite=BeautifulSoup(r.content,'html.parser').text
-kantipursite2=BeautifulSoup(s.content,'html.parser').text
-kantipursite3=BeautifulSoup(s.content,'html.parser').text
-kantipursite=json.loads(kantipursite)
-kantipursite2=json.loads(kantipursite2)
-kantipursite3=json.loads(kantipursite3)
-kantipursite=kantipursite['data']['items']
-kantipursite2=kantipursite2['data']['items']
-kantipursite3=kantipursite3['data']['items']
 
+def main():
+    with open('samriddha.json','r') as file:
+        try:
+            saveddata = json.load(file)
+            print('length of json file has become ', a)
+        except :
+            saveddata=[]
+    a=len(saveddata)
 
-for i in kantipursite2:
-    kantipursite.append(i)
-for i in kantipursite3:
-    kantipursite.append(i)
-datas=[]
-
-for i in range(1,4):
-    count=0
-    for j in kantipursite:
-        count=count+1
-        if count > 10:
+    while True:
+        if a<10:
+            pagenumber= int(a/10)+1
+            final_url=base_url+str(pagenumber)
+            print(final_url)
+            r=requests.get(final_url, headers = headers)
+            # kantipursite=BeautifulSoup(r.content,'html.parser').text
+            kantipursite=json.loads(r.text)
+            print(len(kantipursite['data']['items']))
+            for i in range(len(kantipursite['data']['items'])):
+                title = kantipursite['data']['items'][i]['title']
+                content = kantipursite['data']['items'][i]['content']
+                saveddata.append({"title": title})
+            a =a +10
+            with open("samriddha.json", "w") as outfile:
+                json.dump(saveddata, outfile,indent=4)
+        else:
+            print("Finished")
             break
-        data={
-            'page':i,
-            'details':j
-        }
-    datas.append(data)
 
-with open("data.json", "w") as outfile:
-    json.dump(datas, outfile)
-
-
-
+if __name__ =='__main__':
+    main()
