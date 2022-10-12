@@ -48,7 +48,5 @@ for i in range(1,4):
 with open("data.json", "w") as outfile:
     json.dump(datas, outfile)
 
-with open('data.json', 'r') as openfile:
-    json_object = json.load(openfile)
 
 
