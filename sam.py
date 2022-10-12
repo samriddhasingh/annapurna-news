@@ -41,7 +41,7 @@ for i in range(1,4):
             break
         data={
             'page':i,
-            'news':j
+            'details':j
         }
     datas.append(data)
 
@@ -51,4 +51,4 @@ with open("data.json", "w") as outfile:
 with open('data.json', 'r') as openfile:
     json_object = json.load(openfile)
 
-print(json_object)
+
